@@ -1,0 +1,25 @@
+import joblib
+from io import BytesIO
+import pickle
+import requests # or https
+
+# The website address of your pickle file
+url=''
+
+# Download the pickle file
+response = requests.get(url)
+response.raise_for_status()  # Ensure the download was successful
+
+# Load the pickle file
+data = pickle.loads(response.content)
+
+info_crsp = data['info_crsp']
+crsp = data['crsp']
+crsp_comp = data['crsp_comp']
+
+########################################
+# log transformation
+import numpy as np
+crsp_comp['norm'] = (1+crsp_comp.revt)/2
+crsp_comp['log_revt'] = np.log(crsp_comp['norm'])
+crsp_comp.head()
